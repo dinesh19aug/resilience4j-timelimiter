@@ -25,7 +25,9 @@ public class Resilience4jWrapper
                                                                         .failureRateThreshold(20)
                                                                         .ringBufferSizeInClosedState(5)
                                                                         .waitDurationInOpenState(
-                                                                                Duration.ofSeconds(10)).build();
+                                                                                Duration.ofSeconds(10))
+                                                                        .ringBufferSizeInHalfOpenState(5)
+                                                                        .build();
         timeLimiter = TimeLimiter.of(Duration.ofMillis(500));
         Callable<PaymentVO> timeRestricted =
                 TimeLimiter.decorateFutureSupplier(timeLimiter, () -> executorService.submit(() -> PaymentController.getPayment()));

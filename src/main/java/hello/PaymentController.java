@@ -30,7 +30,7 @@ public class PaymentController
         int seconds = (LocalTime.now()).getSecond();
         try
         {
-            if (seconds%3 ==0)
+            if (seconds%10 ==0)
             {
                 Thread.sleep(1000);
             }
