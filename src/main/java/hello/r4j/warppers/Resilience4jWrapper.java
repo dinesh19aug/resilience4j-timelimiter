@@ -1,10 +1,12 @@
-package hello;
+package hello.r4j.warppers;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import hello.PaymentController;
+import hello.PaymentVO;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.timelimiter.TimeLimiter;
@@ -26,7 +28,7 @@ public class Resilience4jWrapper
                                                                         .ringBufferSizeInClosedState(5)
                                                                         .waitDurationInOpenState(
                                                                                 Duration.ofSeconds(10))
-                                                                        .ringBufferSizeInHalfOpenState(5)
+                                                                        .ringBufferSizeInHalfOpenState(3)// TURN it OFF to show reset feature
                                                                         .build();
         timeLimiter = TimeLimiter.of(Duration.ofMillis(500));
         Callable<PaymentVO> timeRestricted =
@@ -48,7 +50,7 @@ public class Resilience4jWrapper
     public Try<PaymentVO> run()
 
     {
-        System.out.println("BEFORE: \n");
+        System.out.println("BEFORE:");
         printLogs();
         Try<PaymentVO> greeting =  Try.ofCallable(callable);
 
@@ -67,13 +69,13 @@ public class Resilience4jWrapper
         System.out.println("State: " + circuitBreaker.getState());
         System.out.println("Threshold: " + circuitBreaker.getMetrics().getFailureRate());
         System.out.println("FailedCalls: " + circuitBreaker.getMetrics().getNumberOfFailedCalls());
-        System.out.println("Passed Call: " + (circuitBreaker.getMetrics().getNumberOfSuccessfulCalls() + 1));
+        System.out.println("Passed Call: " + (circuitBreaker.getMetrics().getNumberOfSuccessfulCalls() ));
     }
 
     public void printErrorLogs(){
         System.out.println("State: " + circuitBreaker.getState());
         System.out.println("Threshold: " + circuitBreaker.getMetrics().getFailureRate());
-        System.out.println("FailedCalls: " + (circuitBreaker.getMetrics().getNumberOfFailedCalls() + 1));
+        System.out.println("FailedCalls: " + (circuitBreaker.getMetrics().getNumberOfFailedCalls() ));
         System.out.println("Passed Call: " + circuitBreaker.getMetrics().getNumberOfSuccessfulCalls() );
     }
 }

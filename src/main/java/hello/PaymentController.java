@@ -2,6 +2,7 @@ package hello;
 import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicLong;
 
+import hello.r4j.warppers.Resilience4jWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,7 +12,7 @@ public class PaymentController
 {
     @Autowired
     Resilience4jWrapper r4j;
-    //static int count =0;
+    static int count =0;
     private static final String template = "ID-%s";
     private static final AtomicLong counter = new AtomicLong();
 
@@ -51,7 +52,7 @@ public class PaymentController
     private void printCount()
     {
         System.out.println("**********************************************");
-        System.out.println("CALLED : " + counter);
+        System.out.println("CALLED : " + ++count);
         System.out.println("**********************************************");
     }
 }
