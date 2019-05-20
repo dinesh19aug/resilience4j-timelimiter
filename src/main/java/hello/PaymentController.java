@@ -15,7 +15,7 @@ public class PaymentController
     private static final String template = "ID-%s";
     private static final AtomicLong counter = new AtomicLong();
 
-    @RequestMapping("/push-to-card/v2/payment")
+    @RequestMapping("/push-to-card/v2/payment/timelimit")
     public PaymentVO greeting()
 
     {
