@@ -13,6 +13,7 @@ The circuit breaker is set for
 - Failure Threshold 20% (If the number of failed calls is more than 20%, it will go in OPEN MODE)
 - RingBufferInClosedState : 5 (Threashhold is counted on evry 5 consecutive calls)
 - waitDurationInOpenState : 10 seconds (Time after which #failed calls and #success calls will be set to 0)
+- RingBufferInHalfOpenState: 5 (Before the state can be changed from **HALF_OPEN** to closed, the **HALF_OPEN** ring bit buffer is checked. If Failure threshold is below 20% then it switches to **CLOSED**)
 ```
 CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
                                                                         .failureRateThreshold(20)
