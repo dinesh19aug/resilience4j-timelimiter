@@ -2,6 +2,7 @@ package hello;
 import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicLong;
 
+import hello.r4j.warppers.Resilience4jRateLimiterWrapper;
 import hello.r4j.warppers.Resilience4jWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,9 @@ public class PaymentController
 {
     @Autowired
     Resilience4jWrapper r4j;
+
+    @Autowired
+    Resilience4jRateLimiterWrapper r4jRateLimiter;
     static int count =0;
     private static final String template = "ID-%s";
     private static final AtomicLong counter = new AtomicLong();
@@ -24,6 +28,20 @@ public class PaymentController
         PaymentVO paymentVO = r4j.run().get();
         //r4j.printLogs();
         return paymentVO;
+    }
+
+    @RequestMapping("/push-to-card/v2/payment/ratelimit")
+    public PaymentVO rateLimit()
+
+    {
+        printCount();
+        PaymentVO paymentVO = r4jRateLimiter.run().get();
+        //r4j.printLogs();
+        return paymentVO;
+    }
+
+    public static PaymentVO getRateLimit(){
+        return getPaymentVO();
     }
 
     public static PaymentVO getPayment()
@@ -40,6 +58,11 @@ public class PaymentController
         {
             System.out.println("*** Throwing InterruptedException ***");
         }
+        return getPaymentVO();
+    }
+
+    private static PaymentVO getPaymentVO()
+    {
         return new PaymentVO("APPROVED",
                              String.format(template, getId()));
     }
